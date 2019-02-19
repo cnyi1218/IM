@@ -2,9 +2,12 @@ package haoruyi.com
 
 import android.os.Handler
 import haoruyi.com.contract.SplashContract
+import haoruyi.com.presenter.SplashPresenter
 import org.jetbrains.anko.startActivity
 
 class SplashActivity :BaseActivity(),SplashContract.View {
+
+    val presenter = SplashPresenter(this)
 
     companion object {
         val DELAY = 2000L
@@ -12,6 +15,11 @@ class SplashActivity :BaseActivity(),SplashContract.View {
 
     val handler by lazy {
         Handler()
+    }
+
+    override fun init() {
+        super.init()
+        presenter.checkLoginStatus()
     }
 
     override fun getLayoutResId(): Int =
