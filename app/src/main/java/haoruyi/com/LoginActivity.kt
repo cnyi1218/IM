@@ -1,5 +1,8 @@
 package haoruyi.com
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
 import android.view.KeyEvent
 import android.widget.TextView
 import haoruyi.com.contract.LoginContract
@@ -27,10 +30,38 @@ class LoginActivity :BaseActivity(),LoginContract.View {
     fun login(){
         //隐藏软键盘
         hideSoftKeyBoard()
-        val userNameString = userName.text.trim().toString()
-        val passwordString = password.text.trim().toString()
-        presenter.Login(userNameString,passwordString)
+        if(hasWriteExternalStoragePermission()){
+            val userNameString = userName.text.trim().toString()
+            val passwordString = password.text.trim().toString()
+            presenter.Login(userNameString,passwordString)
+        }else applyWriteExternalStoragePermission()
+
     }
+
+    private fun applyWriteExternalStoragePermission() {
+
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        ActivityCompat.requestPermissions(this,permissions,0)
+    }
+
+
+    //检查是否有写磁盘的权限
+    private fun hasWriteExternalStoragePermission(): Boolean {
+
+        val result = ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        return result == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            //用户同意权限，开始登录
+            login()
+        }else{
+            toast(R.string.permission_denied)
+        }
+
+    }
+
 
     override fun onUserNameError() {
         userName.setError(getString(R.string.user_name_error))
