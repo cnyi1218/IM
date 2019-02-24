@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.inputmethod.InputMethodManager
 
-abstract class BaseActivity:AppCompatActivity() {
+abstract class  BaseActivity:AppCompatActivity() {
 
     val progressDialog by lazy {
         ProgressDialog(this
